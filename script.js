@@ -31,16 +31,22 @@ function newTodo() {
 
   // Creates a unique identifier for the element, and sets the element's text as that identifier .
   identifier += 1
-  const text = document.createTextNode('Task ' + identifier);
+  var text = document.createTextNode('Task ' + identifier + '   ');
   text.className = classNames['TODO_TEXT'];
   li.appendChild(text);
+
+  // Creates a text box for describing the content of the task, and appends it to the list element.
+  const description = document.createElement('input');
+  description.type = 'text'
+  description.className = classNames['TODO_TEXT']
+  li.appendChild(description)
 
   // Create a checkbox, link it to a handler, and append it to the list element.
   const checkbox = document.createElement('input');
   checkbox.className = classNames['TODO_CHECKBOX'];
   checkbox.type = 'checkbox';
   checkbox.name = 'checkbox';
-  checkbox.onclick = updateCountingLabels;
+  checkbox.onclick = checkTodo;
   li.appendChild(checkbox)
 
   // Create a deleteButton, link it to a handler, and append it to the list element.
@@ -62,6 +68,25 @@ function deleteListItem() {
 
   // Update the todo Items count
   updateCountingLabels();
+}
+
+// Triggered when a todo item element is checked (or unchecked).
+// [] --> The item will have regular (not strike-through) text.
+// [V] --> The item will have strikedThrough text.
+function checkTodo(){
+  // comment: this = checkbox.
+  // (i.e, when referencing this, we're referencing the most recently "used" checkbox)
+  const listItem = this.parentNode;
+
+  // make the text of the item striked-through iff the checkbox is checked.
+  listItem.style.textDecoration = (this.checked)? 'line-through' : ''
+
+  // Every list item is created in a manner that assures that listItem.childNodes[1]
+  // is the text box for the item's description.
+  listItem.childNodes[1].hidden = (this.checked)? true: false
+
+  // Update the todo Items count
+  updateCountingLabels()
 }
 
 // Counts the overall number of todo items and the number of unchecked todo
